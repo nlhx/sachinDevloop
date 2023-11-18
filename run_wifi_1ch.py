@@ -13,7 +13,7 @@ import csv
 num_scenarios = 1           # how many scenarios are simulated
 num_seeds = 20              # how many times each scenario is simulated
 notes = "6-100-2"           # notes to be written in the .csv file
-ns3_script = "wifi_1ch"      # ns3 script to be launched
+ns3_script = "wifi_1ch"     # ns3 script to be launched
 
 timestamp = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
 filebase = "/testfile_" + timestamp

@@ -35,27 +35,27 @@ def main():
             args["band"] = "AX_5"
             args["phyModel"] = "spectrum"
             args["constantMcs"] = 1
-            args["channelNumberA"] = 42 # Network A
-            args["channelWidthA"] = 20
-            args["mcs"] = 0
-            args["giA"] = 800
-            args["txPowerA"] = 2
-            #args["dataRateA"] = "2Mb/s"
-            args["channelNumberB"] = 114 # Network B
-            args["channelWidthB"] = 20
-            #args["mcsB"] = 5
-            args["giB"] = 1600
-            args["txPowerB"] = -4
-            #args["dataRateB"] = "10Kb/s"
-            args["channelNumberC"] = 155 # Network C
-            args["channelWidthC"] = 40
-            #args["mcsC"] = 5
-            args["giC"] = 800
-            args["txPowerC"] = 18
-            #args["dataRateC"] = "1Mb/s"
-            args["nStaA"] = 1
-            args["nStaB"] = 1
-            args["nStaC"] = 1
+            #args["channelNumberA"] = 0 # Network A
+            #args["channelWidthA"] = 0
+            #args["mcsA"] = 0
+            #args["giA"] = 0
+            #args["txPowerA"] = 0
+            #args["dataRateA"] = "xMb/s"
+            #args["channelNumberB"] = 0 # Network B
+            #args["channelWidthB"] = 0
+            #args["mcsB"] = 0
+            #args["giB"] = 0
+            #args["txPowerB"] = 0
+            #args["dataRateB"] = "xKb/s"
+            #args["channelNumberC"] = 0 # Network C
+            #args["channelWidthC"] = 0
+            #args["mcsC"] = 0
+            #args["giC"] = 0
+            #args["txPowerC"] = 0
+            #args["dataRateC"] = "xMb/s"
+            #args["nStaA"] = 1
+            #args["nStaB"] = 1
+            #args["nStaC"] = 1
             arg_list.append(args)
     with open(csv_file_py, 'w') as file:
         writer = csv.writer(file)
@@ -77,27 +77,27 @@ def get_arguments(arg):
     	" --band=",
     	" --phyModel=",
         " --constantMcs=",
-    	" --channelNumberA=", # Network A
-        " --channelWidthA=",
-        " --mcs=",
-        " --giA=",
-        " --txPowerA=",
+    	#" --channelNumberA=", # Network A
+        #" --channelWidthA=",
+        #" --mcsA=",
+        #" --giA=",
+        #" --txPowerA=",
         #" --dataRateA=",
-        " --channelNumberB=", # Network B
-        " --channelWidthB=",
+        #" --channelNumberB=", # Network B
+        #" --channelWidthB=",
         #" --mcsB=",
-        " --giB=",
-        " --txPowerB=",
+        #" --giB=",
+        #" --txPowerB=",
         #" --dataRateB=",
-        " --channelNumberC=", # Network C
-        " --channelWidthC=",
+        #" --channelNumberC=", # Network C
+        #" --channelWidthC=",
         #" --mcsC=",
-        " --giC=",
-        " --txPowerC=",
+        #" --giC=",
+        #" --txPowerC=",
         #" --dataRateC=",
-        " --nStaA=",
-        " --nStaB=",
-        " --nStaC="
+        #" --nStaA=",
+        #" --nStaB=",
+        #" --nStaC="
         ]
     atribute_values = [
     	str(arg["simulationTime"]),
@@ -106,27 +106,27 @@ def get_arguments(arg):
     	str(arg["band"]),
     	str(arg["phyModel"]),
         str(arg["constantMcs"]),
-    	str(arg["channelNumberA"]), # Network A
-    	str(arg["channelWidthA"]),
-        str(arg["mcs"]),
-        str(arg["giA"]),
-        str(arg["txPowerA"]),
+    	#str(arg["channelNumberA"]), # Network A
+    	#str(arg["channelWidthA"]),
+        #str(arg["mcsA"]),
+        #str(arg["giA"]),
+        #str(arg["txPowerA"]),
         #str(arg["dataRateA"]),
-        str(arg["channelNumberB"]), # Network B
-        str(arg["channelWidthB"]),
+        #str(arg["channelNumberB"]), # Network B
+        #str(arg["channelWidthB"]),
         #str(arg["mcsB"]),
-        str(arg["giB"]),
-        str(arg["txPowerB"]),
+        #str(arg["giB"]),
+        #str(arg["txPowerB"]),
         #str(arg["dataRateB"]),
-        str(arg["channelNumberC"]), # Network C
-        str(arg["channelWidthC"]),
+        #str(arg["channelNumberC"]), # Network C
+        #str(arg["channelWidthC"]),
         #str(arg["mcsC"]),
-        str(arg["giC"]),
-        str(arg["txPowerC"]),
+        #str(arg["giC"]),
+        #str(arg["txPowerC"]),
         #str(arg["dataRateC"]),
-        str(arg["nStaA"]),
-        str(arg["nStaB"]),
-        str(arg["nStaC"])
+        #str(arg["nStaA"]),
+        #str(arg["nStaB"]),
+        #str(arg["nStaC"])
         ]
     arguments = ""
     for s in range(0, len(atribute_names)):
