@@ -73,7 +73,7 @@
 
 using namespace ns3;
 
-NS_LOG_COMPONENT_DEFINE ("wifin");
+NS_LOG_COMPONENT_DEFINE ("wifi_dynamic");
 
 double tab1[12][8] = {
   {7.10, 7.49, 14.4, 15.2, 30.1, 31.8, 60.2, 63.9},
@@ -92,53 +92,45 @@ double tab1[12][8] = {
 
 int tab2[12] = {-69, -66, -63, -59, -56, -52, -50, -48, -44, -43, -39, -37};
 
-const int nStaA = 6; // # of Stations A
-const int nStaB = 100; // # of Stations B
-const int nStaC = 2; // # of Stations C
-uint32_t payloadSize = 1472; // Bytes (UDP)
-double simulationTime = 15; // Seconds 15
-int seed = 1; // Seed used in the simulation
-std::string csvFileName = "testFile.csv";
-std::string band = "AX_5"; // "AC_5", "AX_2.4" or "AX_5"
-std::string phyModel = "spectrum"; // "spectrum" or "yans"
-bool constantMcs = 1; // 0 = Minstrel or 1 = constant
-bool enablePcap = 0;
-double x_max = 20.0;
-double y_max = 10.0;
-double z_max = 3.0;
+uint32_t payloadSize = 1472;          // bytes (UDP)
+double simulationTime = 15;           // seconds
+int seed = 1;                         // seed used in the simulation
+std::string csvFileName = "test.csv"; // csv file name
+std::string band = "AX_5";            // AC_5, AX_2.4 or AX_5
+std::string phyModel = "spectrum";    // "spectrum" or "yans"
+bool constantMcs = 1;                 // 0 Minstrel or 1 constant
+bool enablePcap = 0;                  // 0 no Pcap or 1 Pcap
+double x_max = 20.0;                  // meters
+double y_max = 10.0;                  // meters
+double z_max = 3.0;                   // meters
+const int nStaA = 6;                  // number of stations A
+const int nStaB = 100;                // number of stations B
+const int nStaC = 2;                  // number of stations C
 // Network A
-int channelNumberA = 42; // Channel number A
-int channelWidthA = 20; // 20, 40, 80 or 160 MHz
-int mcsA = 5; // from 0 to 11 (-1 = unset value)
+int channelNumberA = 42;  // Channel number A
+int channelWidthA = 20;   // 20, 40, 80 or 160 MHz
+int mcsA = 5;             // from 0 to 11 (-1 = unset value)
 int mcsA_min = 0;
 int mcsA_max = 11;
-int giA = 800; // 800, 1600 or 3200 ns
-int txPowerA = 20; // dBm
-double xA = 0.0; // meters
-double yA = 3.0; // meters
+int giA = 800;            // 800, 1600 or 3200 ns
+int txPowerA = 20;        // dBm
 std::string dataRateA_old = "10Mb/s";
 // Network B
 int channelNumberB = 114; // Channel number B
-int channelWidthB = 20; // 20, 40, 80 or 160 MHz
-int mcsB = 1; // from 0 to 11 (-1 = unset value)
-int giB = 1600; // 800, 1600 or 3200 ns
-int txPowerB = 0; // dBm
-double xB = -9.0; // meters
-double yB = 4.0; // meters
+int channelWidthB = 20;   // 20, 40, 80 or 160 MHz
+int mcsB = 1;             // from 0 to 11 (-1 = unset value)
+int giB = 1600;           // 800, 1600 or 3200 ns
+int txPowerB = 0;         // dBm
 std::string dataRateB_old = "10Mb/s";
 // Network C
 int channelNumberC = 155; // Channel number B
-int channelWidthC = 40; // 20, 40, 80 or 160 MHz
-int mcsC = 5; // from 0 to 11 (-1 = unset value)
+int channelWidthC = 40;   // 20, 40, 80 or 160 MHz
+int mcsC = 5;             // from 0 to 11 (-1 = unset value)
 int mcsC_min = 0;
 int mcsC_max = 11;
-int giC = 800; // 800, 1600 or 3200 ns
-int txPowerC = 20; // dBm
-double xC = 8.0; // meters
-double yC = -4.5; // meters
+int giC = 800;            // 800, 1600 or 3200 ns
+int txPowerC = 20;        // dBm
 std::string dataRateC_old = "10Mb/s";
-
-uint64_t nPacketsSent = 0;
 
 std::vector<int> dataRateA(nStaA);
 std::vector<int> dataRateB(nStaB);
@@ -169,7 +161,7 @@ std::vector<double> latency_unsort(nStaA+nStaB+nStaC);
 //std::vector<double> latency(nStaA+nStaB+nStaC);
 uint32_t txPackets[2][nStaA+nStaB+nStaC]; // # txPackets until t0 and t0-T
 uint32_t rxPackets[2][nStaA+nStaB+nStaC]; // # rxPackets until t0 and t0-T
-double latency[2][nStaA+nStaB+nStaC]; // # average latency until t0 and t0-T
+double latency[2][nStaA+nStaB+nStaC];     // # average latency until t0 and t0-T
 
 std::vector<uint32_t> destPorts(nStaA+nStaB+nStaC);
 
@@ -189,7 +181,7 @@ int txPowerAddB = 3;
 int channelWidthMulC = 1;
 
 
-
+// function to define the parameters which can be set when the script is called
 void configure (int argc, char *argv[])
 {
   CommandLine cmd;
@@ -207,8 +199,6 @@ void configure (int argc, char *argv[])
   cmd.AddValue ("mcsA", "if set, limit testing to a specific MCS A", mcsA);
   cmd.AddValue ("giA", "Guard interval A", giA);
   cmd.AddValue ("txPowerA", "Transmission power A", txPowerA);
-  cmd.AddValue ("xA", "Distance in meters xA", xA);
-  cmd.AddValue ("yA", "Distance in meters yA", yA);
   cmd.AddValue ("dataRateA_old", "Data rate A", dataRateA_old);
   // Network B
   cmd.AddValue ("channelNumberB", "Channel number B", channelNumberB);
@@ -216,8 +206,6 @@ void configure (int argc, char *argv[])
   cmd.AddValue ("mcsB", "if set, limit testing to a specific MCS B", mcsB);
   cmd.AddValue ("giB", "Guard interval B", giB);
   cmd.AddValue ("txPowerB", "Transmission power B", txPowerB);
-  cmd.AddValue ("xB", "Distance in meters xB", xB);
-  cmd.AddValue ("yB", "Distance in meters yB", yB);
   cmd.AddValue ("dataRateB_old", "Data rate B", dataRateB_old);
   // Network C
   cmd.AddValue ("channelNumberC", "Channel number C", channelNumberC);
@@ -225,8 +213,6 @@ void configure (int argc, char *argv[])
   cmd.AddValue ("mcsC", "if set, limit testing to a specific MCS C", mcsC);
   cmd.AddValue ("giC", "Guard interval C", giC);
   cmd.AddValue ("txPowerC", "Transmission power C", txPowerC);
-  cmd.AddValue ("xC", "Distance in meters xC", xC);
-  cmd.AddValue ("yC", "Distance in meters yC", yC);
   cmd.AddValue ("dataRateC_old", "Data rate C", dataRateC_old);
 
   //cmd.AddValue ("nStaA", "Number Stations A", nStaA);
@@ -236,63 +222,9 @@ void configure (int argc, char *argv[])
 }
 
 
-void SourceUdpTrace (Ptr<const Packet> pkt)
-{
-  nPacketsSent++;
-}
-
-
-void handler (int x, ApplicationContainer serverAppA, ApplicationContainer serverAppB)
-{
-  std::cout << "At time 5s handler called with argument arg0 = " << x << std::endl;
-
-  // Parameters from here can be modified:
-  // https://www.nsnam.org/doxygen/classns3_1_1_yans_wifi_phy.html
-
-  //Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/ChannelNumber", UintegerValue (52));
-  //Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/ChannelWidth", UintegerValue (40));
-  //Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/TxPowerStart", DoubleValue (16));
-  //Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/TxPowerEnd", DoubleValue (16));
-  //Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/HeConfiguration/GuardInterval", TimeValue (NanoSeconds (1600)));
-
-  //Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/RemoteStationManager/$ns3::ConstantRateWifiManager/DataMode", StringValue ("HeMcs0"));
-  //Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/RemoteStationManager/$ns3::ConstantRateWifiManager/ControlMode", StringValue ("HeMcs0"));
-
-  uint64_t totalPacketsThroughputA = DynamicCast<UdpServer> (serverAppA.Get (0))->GetReceived ();
-  uint64_t totalPacketsThroughputB = DynamicCast<UdpServer> (serverAppB.Get (0))->GetReceived ();
-
-  uint64_t totalPacketsLossA = DynamicCast<UdpServer> (serverAppA.Get (0))->GetLost (); // added
-  uint64_t totalPacketsLossB = DynamicCast<UdpServer> (serverAppB.Get (0))->GetLost (); // added
-
-  std::cout << "ReceivedA = " << totalPacketsThroughputA << std::endl; // added
-  std::cout << "LossA = " << totalPacketsLossA << std::endl; // added
-
-  std::cout << "ReceivedB = " << totalPacketsThroughputB << std::endl; // added
-  std::cout << "LossB = " << totalPacketsLossB << std::endl; // added
-}
-
-
-void handler2 (int x, ApplicationContainer serverAppA, ApplicationContainer serverAppB)
-{
-  std::cout << "At time 10s handler2 called with argument arg0 = " << x << std::endl;
-
-  uint64_t totalPacketsThroughputA = DynamicCast<UdpServer> (serverAppA.Get (0))->GetReceived ();
-  uint64_t totalPacketsThroughputB = DynamicCast<UdpServer> (serverAppB.Get (0))->GetReceived ();
-
-  uint64_t totalPacketsLossA = DynamicCast<UdpServer> (serverAppA.Get (0))->GetLost (); // added
-  uint64_t totalPacketsLossB = DynamicCast<UdpServer> (serverAppB.Get (0))->GetLost (); // added
-
-  std::cout << "ReceivedA = " << totalPacketsThroughputA << std::endl; // added
-  std::cout << "LossA = " << totalPacketsLossA << std::endl; // added
-
-  std::cout << "ReceivedB = " << totalPacketsThroughputB << std::endl; // added
-  std::cout << "LossB = " << totalPacketsLossB << std::endl; // added
-}
-
-
+// function to set the channel number
 void set_channel_number()
 {
-  // Set Channel Number
   for (int i = 0; i < nStaA; i++)
     Config::Set ("/NodeList/" + std::to_string(i) + "/DeviceList/0/$ns3::WifiNetDevice/Phy/ChannelNumber",
                  UintegerValue (channelNumberA));
@@ -311,16 +243,14 @@ void set_channel_number()
 }
 
 
+// function to set the channel width
 void set_channel_width()
 {
-  // Set Channel Width
-  //Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/ChannelWidth",
-  //             UintegerValue (channelWidthA));
   for (int i = 0; i < nStaA; i++)
     Config::Set ("/NodeList/" + std::to_string(i) + "/DeviceList/0/$ns3::WifiNetDevice/Phy/ChannelWidth",
                  UintegerValue (channelWidthA));
   Config::Set ("/NodeList/" + std::to_string(nStaA+nStaB+nStaC) + "/DeviceList/0/$ns3::WifiNetDevice/Phy/ChannelWidth",
-               UintegerValue (channelWidthA)); ///NodeList/3/DeviceList 3?
+               UintegerValue (channelWidthA));
   for (int i = 0; i < nStaB; i++)
     Config::Set ("/NodeList/" + std::to_string(nStaA+i) + "/DeviceList/0/$ns3::WifiNetDevice/Phy/ChannelWidth",
                  UintegerValue (channelWidthB));
@@ -334,10 +264,9 @@ void set_channel_width()
 }
 
 
+// function to set the tx power
 void set_tx_power()
 {
-  // Set Tx Power
-  //Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/TxPowerStart", DoubleValue (16));
   for (int i = 0; i < nStaA; i++)
   {
     Config::Set ("/NodeList/" + std::to_string(i) + "/DeviceList/0/$ns3::WifiNetDevice/Phy/TxPowerStart",
@@ -374,11 +303,9 @@ void set_tx_power()
 }
 
 
+// function to set the guard interval
 void set_guard_interval()
 {
-  // Set Guard Interval
-  //Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/HeConfiguration/GuardInterval",
-  //             TimeValue (NanoSeconds (gi)));
   for (int i = 0; i < nStaA; i++)
     Config::Set ("/NodeList/" + std::to_string(i) + "/DeviceList/0/$ns3::WifiNetDevice/HeConfiguration/GuardInterval",
                  TimeValue (NanoSeconds (giA)));
@@ -397,14 +324,9 @@ void set_guard_interval()
 }
 
 
+// function to set the modulation and coding scheme
 void set_mcs()
 {
-  // Set Modulation and Coding Scheme
-  // oss << "HeMcs" << mcs;
-  // Equivalent to "DataMode", StringValue ("HeMcs1"), "ControlMode", StringValue ("HeMcs1")
-  // wifi.SetRemoteStationManager ("ns3::ConstantRateWifiManager",
-  //                               "DataMode", StringValue (oss.str ()),
-  //                               "ControlMode", StringValue (oss.str ()));
   std::ostringstream ossA;
   ossA << "HeMcs" << mcsA;
   for (int i = 0; i < nStaA; i++)
@@ -459,7 +381,7 @@ void set_mcs()
 }
 
 
-// This function creates a new C/S application. It is called nStaA+nStaB+nStaC times.
+// function to create a new C/S application
 void new_application (uint16_t& index, NodeContainer staNodes, NodeContainer apNode, std::string dataRate_str,
 					  Ipv4InterfaceContainer& apInterface, ApplicationContainer& clientApp, ApplicationContainer& serverApp)
 {
@@ -484,7 +406,7 @@ void new_application (uint16_t& index, NodeContainer staNodes, NodeContainer apN
 }
 
 
-// This function updates channel numbers, channel widths, GIs, MCSs, and Ptxs for each slice.
+// function to update channel numbers, channel widths, GIs, MCSs, and Ptxs for each slice.
 void update_channels (int i, Ptr<HybridBuildingsPropagationLossModel> lossModel,
                       NodeContainer staNodes, NodeContainer apNode)
 {
@@ -782,8 +704,7 @@ void update_channels (int i, Ptr<HybridBuildingsPropagationLossModel> lossModel,
 }
 
 
-
-// This function computes channel numbers and channel widths for each slice.
+// function to compute channel numbers and widths for each slice
 void compute_channels (Ptr<HybridBuildingsPropagationLossModel> lossModel,
                       NodeContainer staNodes, NodeContainer apNode)
 {
@@ -953,22 +874,19 @@ void compute_channels (Ptr<HybridBuildingsPropagationLossModel> lossModel,
 }
 
 
-
+// function main
 int main (int argc, char *argv[])
 {
-  //std::cout << "4 5: " << tab1[4][5] << std::endl;
-
-
-  /* Define CMD commands */
+  // Define CMD commands
   configure(argc, argv);
 
-  /* Set the PRNG seed */
+  // Set the PRNG seed
   RngSeedManager::SetSeed (seed);
 
-  /* Set random throughput for each flow in the the 3 slices */
+  // Set random throughput for each flow in the the 3 slices
   Ptr<UniformRandomVariable> dataRateA_ptr = CreateObject<UniformRandomVariable> ();
-  dataRateA_ptr->SetAttribute ("Min", DoubleValue (80)); //80
-  dataRateA_ptr->SetAttribute ("Max", DoubleValue (101)); //101
+  dataRateA_ptr->SetAttribute ("Min", DoubleValue (80));
+  dataRateA_ptr->SetAttribute ("Max", DoubleValue (101));
   std::vector<std::string> dataRateA_str(nStaA);
   for (int i = 0; i < nStaA; i++)
   {
@@ -976,8 +894,8 @@ int main (int argc, char *argv[])
     dataRateA_str[i] = std::to_string(dataRateA[i]) + "Mb/s";
   }
   Ptr<UniformRandomVariable> dataRateB_ptr = CreateObject<UniformRandomVariable> ();
-  dataRateB_ptr->SetAttribute ("Min", DoubleValue (30)); //30
-  dataRateB_ptr->SetAttribute ("Max", DoubleValue (51)); //51
+  dataRateB_ptr->SetAttribute ("Min", DoubleValue (30));
+  dataRateB_ptr->SetAttribute ("Max", DoubleValue (51));
   std::vector<std::string> dataRateB_str(nStaB);
   for (int i = 0; i < nStaB; i++)
   {
@@ -985,8 +903,8 @@ int main (int argc, char *argv[])
     dataRateB_str[i] = std::to_string(dataRateB[i]) + "Kb/s";
   }
   Ptr<UniformRandomVariable> dataRateC_ptr = CreateObject<UniformRandomVariable> ();
-  dataRateC_ptr->SetAttribute ("Min", DoubleValue (20)); //20
-  dataRateC_ptr->SetAttribute ("Max", DoubleValue (41)); //41
+  dataRateC_ptr->SetAttribute ("Min", DoubleValue (20));
+  dataRateC_ptr->SetAttribute ("Max", DoubleValue (41));
   std::vector<std::string> dataRateC_str(nStaC);
   for (int i = 0; i < nStaC; i++)
   {
@@ -994,7 +912,7 @@ int main (int argc, char *argv[])
     dataRateC_str[i] = std::to_string(dataRateC[i]) + "Mb/s";
   }
 
-  /* Set random positions for STAs */
+  // Set random positions for STAs
   Ptr<UniformRandomVariable> x_ptr = CreateObject<UniformRandomVariable> ();
   x_ptr->SetAttribute ("Min", DoubleValue (0));
   x_ptr->SetAttribute ("Max", DoubleValue (x_max));
@@ -1007,7 +925,7 @@ int main (int argc, char *argv[])
     y[i] = y_ptr->GetValue ();
   }
 
-  // Compute Channels according to Naive algorithm
+  // Compute Channels according to initialization algorithm
   for(std::vector<int>::iterator it = dataRateA.begin(); it != dataRateA.end(); ++it)
     dataRateSumA += *it;
   for(std::vector<int>::iterator it = dataRateB.begin(); it != dataRateB.end(); ++it)
@@ -1020,7 +938,6 @@ int main (int argc, char *argv[])
   staNodes.Create (nStaA + nStaB + nStaC);
   NodeContainer apNode;
   apNode.Create (1);
-  //NodeContainer nodes = NodeContainer(staNodes,apNode);
 
   // Create a phy helper
   SpectrumWifiPhyHelper spectrumPhy = SpectrumWifiPhyHelper::Default ();
@@ -1031,12 +948,6 @@ int main (int argc, char *argv[])
   {
   	// Create the channel
   	Ptr<MultiModelSpectrumChannel> channel = CreateObject<MultiModelSpectrumChannel> ();
-
-  	//Ptr<HybridBuildingsPropagationLossModel> lossModel = CreateObject<HybridBuildingsPropagationLossModel> ();
-  	//Ptr<LogDistancePropagationLossModel> lossModel = CreateObject<LogDistancePropagationLossModel> ();
-
-  	//Ptr<FriisPropagationLossModel> lossModel = CreateObject<FriisPropagationLossModel> ();
-  	//lossModel->SetFrequency (5.180e9);
   	channel->AddPropagationLossModel (lossModel);
   	Ptr<ConstantSpeedPropagationDelayModel> delayModel = CreateObject<ConstantSpeedPropagationDelayModel> ();
   	channel->SetPropagationDelayModel (delayModel);
@@ -1091,7 +1002,6 @@ int main (int argc, char *argv[])
     if (constantMcs == 1)
     {
       oss << "HeMcs" << mcsA;
-      // Equivalent to "DataMode", StringValue ("HeMcs1"), "ControlMode", StringValue ("HeMcs1")
       wifi.SetRemoteStationManager ("ns3::ConstantRateWifiManager",
                                     "DataMode", StringValue (oss.str ()),
                                     "ControlMode", StringValue (oss.str ()));
@@ -1106,12 +1016,9 @@ int main (int argc, char *argv[])
   {
   	wifi.SetStandard (WIFI_PHY_STANDARD_80211ax_2_4GHZ);
   	Config::SetDefault ("ns3::HybridBuildingsPropagationLossModel::Frequency", DoubleValue (2.44e+09));
-    // The default ReferenceLoss is calculated at 5 GHz
-    // Config::SetDefault ("ns3::LogDistancePropagationLossModel::ReferenceLoss", DoubleValue (40.046));
     if (constantMcs == 1)
     {
       oss << "HeMcs" << mcsA;
-      // Equivalent to "DataMode", StringValue ("HeMcs1"), "ControlMode", StringValue ("HeMcs1")
       wifi.SetRemoteStationManager ("ns3::ConstantRateWifiManager",
                                     "DataMode", StringValue (oss.str ()),
                                     "ControlMode", StringValue (oss.str ()));
@@ -1127,16 +1034,7 @@ int main (int argc, char *argv[])
     std::cout << "Wrong band value!" << std::endl;
     return 0;
   }
-
-  /*
-  std::ostringstream oss;
-  oss << "HeMcs" << mcs;
-  // Equivalent to "DataMode", StringValue ("HeMcs1"), "ControlMode", StringValue ("HeMcs1")
-  wifi.SetRemoteStationManager ("ns3::ConstantRateWifiManager",
-                                "DataMode", StringValue (oss.str ()),
-                                "ControlMode", StringValue (oss.str ()));
-  */
-
+  
   // Declare NetDeviceContainers to hold the container returned by the helper
   std::vector<NetDeviceContainer> staDeviceA(nStaA);
   std::vector<NetDeviceContainer> staDeviceB(nStaB);
@@ -1156,8 +1054,6 @@ int main (int argc, char *argv[])
     for (int i = 0; i < nStaA; i++)
       staDeviceA[i] = wifi.Install (spectrumPhy, mac, staNodes.Get (i));
   	mac.SetType ("ns3::ApWifiMac",
-                 //"EnableBeaconJitter", BooleanValue (false),
-                 //"BeaconGeneration", BooleanValue (false),
                  "Ssid", SsidValue (ssid));
   	apDeviceA = wifi.Install (spectrumPhy, mac, apNode.Get(0));
 
@@ -1171,8 +1067,6 @@ int main (int argc, char *argv[])
     for (int i = 0; i < nStaB; i++)
       staDeviceB[i] = wifi.Install (spectrumPhy, mac, staNodes.Get (i + nStaA));
   	mac.SetType ("ns3::ApWifiMac",
-                 //"BeaconGeneration", BooleanValue (true),
-                 //"EnableBeaconJitter", BooleanValue (false),
                  "Ssid", SsidValue (ssid));
   	apDeviceB = wifi.Install (spectrumPhy, mac, apNode.Get(0));
 
@@ -1186,8 +1080,6 @@ int main (int argc, char *argv[])
     for (int i = 0; i < nStaC; i++)
       staDeviceC[i] = wifi.Install (spectrumPhy, mac, staNodes.Get (i + nStaA + nStaB));
     mac.SetType ("ns3::ApWifiMac",
-                 //"BeaconGeneration", BooleanValue (true),
-                 //"EnableBeaconJitter", BooleanValue (false),
                  "Ssid", SsidValue (ssid));
     apDeviceC = wifi.Install (spectrumPhy, mac, apNode.Get(0));
   }
@@ -1203,7 +1095,6 @@ int main (int argc, char *argv[])
     for (int i = 0; i < nStaA; i++)
       staDeviceA[i] = wifi.Install (spectrumPhy, mac, staNodes.Get (i));
     mac.SetType ("ns3::ApWifiMac",
-                 //"EnableBeaconJitter", BooleanValue (false),
                  "Ssid", SsidValue (ssid));
     apDeviceA = wifi.Install (yansPhy, mac, apNode.Get(0));
 
@@ -1217,7 +1108,6 @@ int main (int argc, char *argv[])
     for (int i = 0; i < nStaB; i++)
       staDeviceB[i] = wifi.Install (spectrumPhy, mac, staNodes.Get (i + nStaA));
     mac.SetType ("ns3::ApWifiMac",
-                 //"EnableBeaconJitter", BooleanValue (false),
                  "Ssid", SsidValue (ssid));
     apDeviceB = wifi.Install (yansPhy, mac, apNode.Get(0));
 
@@ -1231,7 +1121,6 @@ int main (int argc, char *argv[])
     for (int i = 0; i < nStaC; i++)
       staDeviceC[i] = wifi.Install (spectrumPhy, mac, staNodes.Get (i + nStaA + nStaB));
     mac.SetType ("ns3::ApWifiMac",
-                 //"EnableBeaconJitter", BooleanValue (false),
                  "Ssid", SsidValue (ssid));
     apDeviceC = wifi.Install (yansPhy, mac, apNode.Get(0));
   }
@@ -1249,12 +1138,7 @@ int main (int argc, char *argv[])
   Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/RemoteStationManager/RtsCtsThreshold",
                UintegerValue (100));
 
-  // Set MPDU buffer size
-  // Present in he-wifi-network.cc but unknown instruction
-  //Config::Set ("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/HeConfiguration/MpduBufferSize",
-  //             UintegerValue (useExtendedBlockAck ? 256 : 64));
-
-  /* Create building */
+  // Create building
   Ptr<Building> b = CreateObject <Building> ();
   b->SetBoundaries (Box (0.0, x_max, 0.0, y_max, 0.0, z_max));
   b->SetBuildingType (Building::Residential);
@@ -1263,21 +1147,13 @@ int main (int argc, char *argv[])
   b->SetNRoomsX (1);
   b->SetNRoomsY (1);
 
-  /* Setting mobility model */
+  // Setting mobility model
   Ptr<ListPositionAllocator> positionAlloc = CreateObject<ListPositionAllocator> ();
   // Set position for AP
   positionAlloc->Add (Vector (10.0, 5.0, 2.9));
   // Set position for STAs
   for (int i = 0; i < nStaA+nStaB+nStaC; i++)
     positionAlloc->Add (Vector (x[i], y[i], 1.5));
-  /*
-  for (int i = 0; i < nStaA; i++)
-    positionAlloc->Add (Vector (10+xA+i, 5+yA, 1.0));
-  for (int i = 0; i < nStaB; i++)
-    positionAlloc->Add (Vector (10+xB+i, 5+yB, 1.0)); //i/4
-  for (int i = 0; i < nStaC; i++)
-    positionAlloc->Add (Vector (10+xC+i, 5+yC, 1.0));
-    */
   MobilityHelper mobility;
   mobility.SetPositionAllocator (positionAlloc);
   mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
@@ -1299,7 +1175,7 @@ int main (int argc, char *argv[])
 
   compute_channels (lossModel, staNodes, apNode);
 
-  /* Internet stack */
+  // Internet stack
   InternetStackHelper stack;
   stack.Install (apNode);
   stack.Install (staNodes);
@@ -1326,7 +1202,7 @@ int main (int argc, char *argv[])
   // Flow monitor
   flowMonitor = flowHelper.InstallAll();
 
-  /* Setting applications */
+  // Setting applications
   uint16_t index = 1;
   std::vector<ApplicationContainer> clientAppA(nStaA), serverAppA(nStaA);
   std::vector<ApplicationContainer> clientAppB(nStaB), serverAppB(nStaB);
@@ -1370,15 +1246,6 @@ int main (int argc, char *argv[])
 
   Simulator::Stop (Seconds (simulationTime + 2));
 
-  //Config::ConnectWithoutContext("/NodeList/*/ApplicationList/*/$ns3::OnOffApplication/Tx",MakeCallback(&SourceUdpTrace));
-
-  /*
-  auto update_channels_lambda = [&] (int i)
-  {
-    std::cout << "At time " << i << "s update_channels called with arguments: " << i << nStaA << std::endl;
-  };
-  */
-
   for (int i = 2; i < simulationTime +1; i++)
   {
     Simulator::Schedule(Seconds(i), &update_channels,
@@ -1389,67 +1256,13 @@ int main (int argc, char *argv[])
   char* ctimeNow =ctime(&timeNow);
   std::cout << OKBLUE <<"Simulation started!  Time: " << ctimeNow << ENDC;
 
-  /*
-  // NetAnim
-  AnimationInterface anim ("animation.xml");
-  for (int i = 0; i < nStaA; ++i)
-    {
-      anim.UpdateNodeDescription (staNodes.Get(i), "staA");
-      anim.UpdateNodeColor (staNodes.Get(i), 255, 255, 0);
-    }
-  for (int i = 0; i < nStaB; ++i)
-    {
-      anim.UpdateNodeDescription (staNodes.Get(nStaA+i), "staB");
-      anim.UpdateNodeColor (staNodes.Get(nStaA+i), 0, 0, 255);
-    }
-  for (int i = 0; i < nStaC; ++i)
-    {
-      anim.UpdateNodeDescription (staNodes.Get (nStaA+nStaB+i), "staC"); // Optional
-      anim.UpdateNodeColor (staNodes.Get (nStaA+nStaB+i), 255, 0, 0); // Optional 
-    }
-  anim.UpdateNodeDescription (apNode.Get(0), "AP");
-  anim.UpdateNodeColor (apNode.Get(0), 128, 128, 128);
-  for (int i = 0; i < nStaA+nStaB+nStaC+1; ++i)
-    {
-      anim.UpdateNodeSize (i,0.3,0.3);
-    }
-  */
-
   Simulator::Run ();
 
   // Activate/deactivate the histograms and the per-probe detailed stats
   std::cout << OKBLUE <<"Writing to file: FlowMonitorFile.xml"<< ENDC << std::endl;
   flowMonitor->SerializeToXmlFile("FlowMonitorFile.xml", false, false);
 
-  /* Show results */
-  /*
-  std::vector<uint64_t> totalPacketsRxA(nStaA), totalPacketsLossA(nStaA);
-  std::vector<uint64_t> totalPacketsRxB(nStaB), totalPacketsLossB(nStaB);
-  std::vector<uint64_t> totalPacketsRxC(nStaC), totalPacketsLossC(nStaC);
-
-  for (int i = 0; i < nStaA; i++)
-  {
-    totalPacketsRxA[i] = DynamicCast<UdpServer> (serverAppA[i].Get (0))->GetReceived ();
-    std::cout << "rxPacketA: " << totalPacketsRxA[i] << std::endl;
-    totalPacketsLossA[i] = DynamicCast<UdpServer> (serverAppA[i].Get (0))->GetLost ();
-  }
-  
-  for (int i = 0; i < nStaB; i++)
-  {
-    totalPacketsRxB[i] = DynamicCast<UdpServer> (serverAppB[i].Get (0))->GetReceived ();
-    std::cout << "rxPacketB: " << totalPacketsRxB[i] << std::endl;
-    totalPacketsLossB[i] = DynamicCast<UdpServer> (serverAppB[i].Get (0))->GetLost ();
-  }
-
-  for (int i = 0; i < nStaC; i++)
-  {
-    totalPacketsRxC[i] = DynamicCast<UdpServer> (serverAppC[i].Get (0))->GetReceived ();
-    std::cout << "rxPacketC: " << totalPacketsRxC[i] << std::endl;
-    totalPacketsLossC[i] = DynamicCast<UdpServer> (serverAppC[i].Get (0))->GetLost ();
-  }
-  */
-
-  //flowMonitor->CheckForLostPackets ();
+  // Show results
   Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowHelper.GetClassifier ());
   FlowMonitor::FlowStatsContainer stats = flowMonitor->GetFlowStats ();
   for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator i = stats.begin (); i != stats.end (); ++i)
@@ -1482,68 +1295,12 @@ int main (int argc, char *argv[])
     latency[0][destPorts[i]-5001] = latency_unsort[i];
   }
 
-  /*
-  for (int i = 0; i < nStaA+nStaB+nStaC; i++)
-  {
-    pathLoss[i] = lossModel->GetLoss (staNodes.Get(i)->GetObject<MobilityModel> (), apNode.Get(0)->GetObject<MobilityModel> ());
-    std::cout << "Path loss: " << pathLoss[i] << std::endl;
-  }
-
-  for (int i = 0; i < nStaA; i++)
-  {
-    rxPower[i] = txPowerA - lossModel->GetLoss (staNodes.Get(i)->GetObject<MobilityModel> (), apNode.Get(0)->GetObject<MobilityModel> ());
-    std::cout << "Received power A: " << rxPower[i] << std::endl;
-  }
-  for (int i = 0; i < nStaB; i++)
-  {
-    rxPower[nStaA+i] = txPowerB - lossModel->GetLoss (staNodes.Get(nStaA+i)->GetObject<MobilityModel> (), apNode.Get(0)->GetObject<MobilityModel> ());
-    std::cout << "Received power B: " << rxPower[nStaA+i] << std::endl;
-  }
-  for (int i = 0; i < nStaC; i++)
-  {
-    rxPower[nStaA+nStaB+i] = txPowerC - lossModel->GetLoss (staNodes.Get(nStaA+nStaB+i)->GetObject<MobilityModel> (), apNode.Get(0)->GetObject<MobilityModel> ());
-    std::cout << "Received power C: " << rxPower[nStaA+nStaB+i] << std::endl;
-  }
-  */
-
   timeNow = time(0);
   ctimeNow =ctime(&timeNow);
   std::cout << OKBLUE << "Simulation finished! Time: " << ctimeNow << ENDC;
   Simulator::Destroy ();
 
-  /*
-  std::vector<double> throughputA(nStaA);
-  std::vector<double> throughputB(nStaB);
-  std::vector<double> throughputC(nStaC);
-
-  for (int i = 0; i < nStaA; i++)
-  {
-  	throughputA[i] = totalPacketsRxA[i] * payloadSize * 8 / (simulationTime * 1000000.0); //Mbbit/s
-  	std::cout << "ThroughputA" << i+1 << " = " << throughputA[i] << " Mbit/s" << std::endl;
-  	std::cout << "ReceivedA" << i+1 << " = " << totalPacketsRxA[i] << std::endl;
-  	std::cout << "LossA" << i+1 << " = " << totalPacketsLossA[i] << std::endl;
-  }
-
-  for (int i = 0; i < nStaB; i++)
-  {
-    throughputB[i] = totalPacketsRxB[i] * payloadSize * 8 / (simulationTime * 1000000.0); //Mbbit/s
-    std::cout << "ThroughputB" << i+1 << " = " << throughputB[i] << " Mbit/s" << std::endl;
-    std::cout << "ReceivedB" << i+1 << " = " << totalPacketsRxB[i] << std::endl;
-    std::cout << "LossB" << i+1 << " = " << totalPacketsLossB[i] << std::endl;
-  }
-
-  for (int i = 0; i < nStaC; i++)
-  {
-    throughputC[i] = totalPacketsRxC[i] * payloadSize * 8 / (simulationTime * 1000000.0); //Mbbit/s
-    std::cout << "ThroughputC" << i+1 << " = " << throughputC[i] << " Mbit/s" << std::endl;
-    std::cout << "ReceivedC" << i+1 << " = " << totalPacketsRxC[i] << std::endl;
-    std::cout << "LossC" << i+1 << " = " << totalPacketsLossC[i] << std::endl;
-  }
-
-  std::cout << "Sent = " << nPacketsSent << std::endl; // added
-  */
-
-  /* Write file csvFileName.csv */
+  // Write file csvFileName.csv
   std::cout << OKBLUE <<"Writing to file: " << csvFileName << ENDC << std::endl;
   // std::ofstream out (csvFileName.c_str ()); // Use it to overwrite the file
   std::ofstream out (csvFileName.c_str (), std::ios::app);
