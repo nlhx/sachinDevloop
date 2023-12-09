@@ -54,12 +54,12 @@ The code to run simulations is organized as follows:
 
 ## Usage
 
-Instructions:
-* Install ns-3 network simulator following the instructions in the main website [nsnam.org](https://www.nsnam.org/).
-* Download this repo as a .zip and extract it.
+Follow the following steps to be able to use our codes:
+* Install the *ns-3* network simulator following the instructions from its main website [nsnam.org](https://www.nsnam.org/).
+* Download this repository as a .zip and extract it.
 * Paste its content inside the ```scratch``` directory, which is inside the *ns-3* release directory.
 
-Alternatively, you can download only specific files you want to use and paste them in the ```scratch``` directory.
+Alternatively, you can download only the specific files you want to use and paste them in the ```scratch``` directory.
 
 To launch a python script, for example ```run_wifi.py```, go in the ```scratch``` directory and type:
 
