@@ -52,6 +52,16 @@ The code to run simulations is organized as follows:
 
 * ```folder1orfile1```: ...
 
+
+To run our results:
+single channel
+static slicing
+dynamic slicing
+
+To use our framework to develop and test your algorithm the files ```run_wifi.py``` and ```wifi.cc``` can be modified and utilized.
+
+In the ```csv``` folder, the outputs of our algorithms 
+
 ## Usage
 
 Follow the following steps to be able to use our codes:
@@ -59,13 +69,15 @@ Follow the following steps to be able to use our codes:
 * Download this repository as a .zip and extract it.
 * Paste its content inside the ```scratch``` directory, which is inside the *ns-3* release directory.
 
-Alternatively, you can download only the specific files you want to use and paste them in the ```scratch``` directory.
+Alternatively, you can download only the specific files you want to use and paste them in the ```scratch``` directory. Everything is now ready.
 
 To launch a python script, for example ```run_wifi.py```, go in the ```scratch``` directory and type:
 
 ```
 python ./run_wifi.py
 ```
+
+Before to launch ```run_wifi.py```, make sure to properly set all the options, including the ```ns3_script``` variable. Once launched, ```run_wifi.py``` will call ```num_seeds``` times the *ns-3* script indicated by ```ns3_script```, and will create a .csv file in which the output of the simulations will be registered.
 
 ### Input files
 
