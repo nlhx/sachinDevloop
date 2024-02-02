@@ -61,8 +61,8 @@ Furthermore, the ```csv``` folder contains the outputs of the simulations genera
 
 In this section you can find detailed instructions on how to use our framework to validate your own network slicing algorithms through simulations in *ns-3*.
 
-Execute the following steps to be able to use our codes:
-* Install the *ns-3* network simulator following the instructions from its main website [nsnam.org](https://www.nsnam.org/).
+FIrst of all, execute the following steps to be able to use our codes:
+* Install the *ns-3* network simulator in your machine following the instructions from the main website [nsnam.org](https://www.nsnam.org/).
 * Download this repository as a .zip and extract it.
 * Paste its content inside the ```scratch``` directory, which is inside the *ns-3* release directory.
 
