@@ -59,9 +59,7 @@ Furthermore, the ```csv``` folder contains the outputs of the simulations genera
 
 ## Usage
 
-In this section you can find detailed instructions on how to use our framework to validate your own network slicing algorithms through simulations in *ns-3*.
-
-FIrst of all, execute the following steps to be able to use our codes:
+In this section you can find detailed instructions on how to use our framework to validate your own network slicing algorithms through simulations in *ns-3*. First of all, execute the following steps to be able to use our codes:
 * Install the *ns-3* network simulator in your machine following the instructions from the main website [nsnam.org](https://www.nsnam.org/).
 * Download this repository as a .zip and extract it.
 * Paste its content inside the ```scratch``` directory, which is inside the *ns-3* release directory, automatically created upon the *ns-3* installation.
@@ -75,6 +73,11 @@ python ./run_wifi.py
 ```
 
 Please, note that all the Python scripts contained in this repository are written in Python 2.7. Thus, you will need this version to run them. Before to launch ```run_wifi.py```, make sure to properly set all the available options, including the ```ns3_script``` variable. Once launched, ```run_wifi.py``` will call the *ns-3* script indicated by ```ns3_script```, and will create a .csv file in which the output of the simulations will be registered.
+
+### ```run_wifi.py``` Configuration
+
+### ```wifi.cc``` Configuration
+test
 
 ## Contribute
 
