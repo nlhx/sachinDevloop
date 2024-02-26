@@ -76,7 +76,7 @@ Please, note that all the Python scripts contained in this repository are writte
 
 ### ```run_wifi.py``` Configuration
 
-### ```wifi.cc``` Configuration
+### ```wifi.``` Configuration
 test
 
 ## Contribute
