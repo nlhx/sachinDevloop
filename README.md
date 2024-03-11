@@ -72,12 +72,21 @@ To launch a Python script, for example ```run_wifi.py```, open a terminal in the
 python ./run_wifi.py
 ```
 
-Please, note that all the Python scripts contained in this repository are written in Python 2.7. Thus, you will need this version to run them. Before to launch ```run_wifi.py```, make sure to properly set all the available options, including the ```ns3_script``` variable. Once launched, ```run_wifi.py``` will call the *ns-3* script indicated by ```ns3_script```, and will create a .csv file in which the output of the simulations will be registered.
+Please, note that all the Python scripts contained in this repository are written in Python 2.7. Thus, you will need this version to run them.
 
-### ```run_wifi.py``` Configuration
+### Configuration of the ```run_wifi.py``` Script
 
-### ```wifi.``` Configuration
-test
+Before to launch ```run_wifi.py```, make sure to properly set all the available options, including the ```ns3_script``` variable. Once launched, ```run_wifi.py``` will call the *ns-3* script indicated by ```ns3_script```, and will create a .csv file in which the output of the simulations will be registered.
+
+### Configuration of the ```wifi.cc``` Script
+
+The idea behind our framework is to create three wireless channels, one for each of the three network slices. Each channel is fully characterized by the following properties: the channel bandwidth, the channel number (given by the center frequency as in the *ns-3* [documentation](https://www.nsnam.org/docs/models/html/wifi-user.html)), the Guard Interval (GI), the Modulation and Coding Scheme (MCS) index and the transmission power. Thus, your algorithm should output suitable values for these properties. To integrate a slicing technique, two functions in the ```wifi.cc``` script must be modified:
+* The function ```compute_channels``` must contain the algorithm which compute the initial channels properties. 
+```
+  * PLACE HERE YOUR CODE TO COMPUTE THE INITIAL CHANNELS PROPERTIES
+```
+At this stage, the devices have not started yet their transmissions. Thus, only the characteristics of the scenario can be taken as inputs (e.g. the number of connected STAs), while we do not have any information about the KPIs of the network.
+* The function ```update_channels``` is called every interval of time *T* to update the channels properties. Thus, it must contain the dynamic, smart algorithm which computes updated values of the channels properties based on the KPIs.
 
 ## Contribute
 
