@@ -14,7 +14,7 @@
 
 ## Introduction
 
-The aim of this project is to provide a framework to develop and evaluate network slicing techniques for Wi-Fi networks. We provide a customizable Wi-Fi indoor scenario, realized with the *ns-3* network simulator, in which several mobile Stations (STAs) are connected to an Access Point (AP) placed in the centre of a room. In general, the STAs have distinct perforance requirements, and are grouped in different networks slices (e.g. eMBB, mMTC and URLLC).
+This project aims to provide a framework to develop and evaluate network slicing techniques for Wi-Fi networks. We provide a customizable Wi-Fi indoor scenario, realized with the *ns-3* network simulator, in which several mobile Stations (STAs) are connected to an Access Point (AP) placed in the centre of a room. In general, the STAs have distinct performance requirements, and are grouped in different networks slices (e.g. eMBB, mMTC and URLLC).
 
 On top of this scenario, we facilitate the implementation and the testing of radio resources allocation algorithms to realize network slicing in the radio access segment of Wi-Fi networks. In particular, three steps need to be followed:
 * Configure the environment parameters, such as the number of Wi-Fi STAs, required throughput in each slice and the dimensions of the room.
@@ -36,7 +36,7 @@ If you use these codes or any modified part of them, please cite our paper: M. N
     DAYS="17-21",
     MONTH="may",
     YEAR="2021",
-    KEYWORDS="Network Slicing ; Wireless and Mobile Networks; Simulation",
+    KEYWORDS="Network Slicing; Wireless and Mobile Networks; Simulation",
     URL="http://XXXXX/211412.pdf"
 }
 ```
@@ -48,7 +48,7 @@ This repository contains Python codes which call the relative *ns-3* C++ scripts
 To validate your own original network slicing algorithm through simulations you will need to use the files ```run_wifi.py``` and ```wifi.cc``` properly configured. Detailed instructions about it are provided in the Section Usage.
 
 Instead, you can reproduce the results presented in the paper "5G Network Slicing for Wi-Fi Networks" with the additional files. More precisely:
-* Launch ```run_wifi_1ch.py``` to reproduce the *single channel* approach. This file will call the ```wifi_1ch.cc``` *ns-3* script to simulate the today's Wi-Fi access technique, in which only one wireless channel is available for all the STAs connected to the AP. We suggest to use this as a reference for the evaluation of your own original resources allocation algorithms.
+* Launch ```run_wifi_1ch.py``` to reproduce the *single channel* approach. This file will call the ```wifi_1ch.cc``` *ns-3* script to simulate the today's Wi-Fi access technique, in which only one wireless channel is available for all the STAs connected to the AP. We suggest to use this as a reference for the evaluation of your original resources allocation algorithms.
 * Launch ```run_wifi_static.py``` to reproduce the *static network slicing* approach. This file will call the ```wifi_static.cc``` *ns-3* script.
 * Launch ```run_wifi_dynamic.py``` to reproduce the *dynamic network slicing* approach. This file will call the ```wifi_dynamic.cc``` *ns-3* script.
 
@@ -59,7 +59,7 @@ Furthermore, the ```csv``` folder contains the outputs of the simulations genera
 
 ## Usage
 
-In this section you can find detailed instructions on how to use our framework to validate your own network slicing algorithms through simulations in *ns-3*. First of all, execute the following steps to be able to use our codes:
+In this section, you can find detailed instructions on how to use our framework to validate your network slicing algorithms through simulations in *ns-3*. First of all, execute the following steps to be able to use our codes:
 * Install the *ns-3* network simulator in your machine following the instructions from the main website [nsnam.org](https://www.nsnam.org/).
 * Download this repository as a .zip and extract it.
 * Paste its content inside the ```scratch``` directory, which is inside the *ns-3* release directory, automatically created upon the *ns-3* installation.
@@ -81,12 +81,8 @@ Before to launch ```run_wifi.py```, make sure to properly set all the available 
 ### Configuration of the ```wifi.cc``` Script
 
 The idea behind our framework is to create three wireless channels, one for each of the three network slices. Each channel is fully characterized by the following properties: the channel bandwidth, the channel number (given by the center frequency as in the *ns-3* [documentation](https://www.nsnam.org/docs/models/html/wifi-user.html)), the Guard Interval (GI), the Modulation and Coding Scheme (MCS) index and the transmission power. Thus, your algorithm should output suitable values for these properties. To integrate a slicing technique, two functions in the ```wifi.cc``` script must be modified:
-* The function ```compute_channels``` must contain the algorithm which compute the initial channels properties. 
-```
-  * PLACE HERE YOUR CODE TO COMPUTE THE INITIAL CHANNELS PROPERTIES
-```
-At this stage, the devices have not started yet their transmissions. Thus, only the characteristics of the scenario can be taken as inputs (e.g. the number of connected STAs), while we do not have any information about the KPIs of the network.
-* The function ```update_channels``` is called every interval of time *T* to update the channels properties. Thus, it must contain the dynamic, smart algorithm which computes updated values of the channels properties based on the KPIs.
+* The function ```compute_channels``` must contain the algorithm which compute the initial channels' properties. At this stage, the devices have not started yet their transmissions. Thus, only the characteristics of the scenario can be taken as inputs (e.g. the number of connected STAs), while we do not have any information about the KPIs of the network.
+* The function ```update_channels``` is called every interval of time *T* (*T* = 1 second in our setup) to update the channels' properties. Thus, it must contain the dynamic, smart algorithm which computes updated values of the channels' properties based on the real-time KPIs.
 
 ## Contribute
 
