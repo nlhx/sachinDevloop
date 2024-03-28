@@ -28,16 +28,11 @@ On top of this scenario, we facilitate the implementation and the testing of rad
 If you use these codes or any modified part of them, please cite our paper: M. Nerini, and D. Palma "5G Network Slicing for Wi-Fi Networks", available here [https://arxiv.org/abs/2101.12644](https://arxiv.org/abs/2101.12644).
 
 ```
-@INPROCEEDINGS{ner20,
-    AUTHOR="Matteo Nerini and David Palma",
-    TITLE="5G Network Slicing for Wi-Fi Networks",
-    BOOKTITLE="IM 2021 () ",
-    ADDRESS="",
-    DAYS="17-21",
-    MONTH="may",
-    YEAR="2021",
-    KEYWORDS="Network Slicing; Wireless and Mobile Networks; Simulation",
-    URL="http://XXXXX/211412.pdf"
+@article{nerini2021,
+  title={5G Network Slicing for Wi-Fi Networks},
+  author={Nerini, Matteo and Palma, David},
+  journal={arXiv preprint arXiv:2101.12644},
+  year={2021}
 }
 ```
 
