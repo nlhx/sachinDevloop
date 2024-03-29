@@ -25,15 +25,18 @@ On top of this scenario, we facilitate the implementation and the testing of rad
 <img src="https://github.com/matteonerini/5g-network-slicing-for-wifi-networks/blob/main/figs/scenario.png" width="50%">
 </p>
 
-If you use these codes or any modified part of them, please cite our paper: M. Nerini, and D. Palma "5G Network Slicing for Wi-Fi Networks", available here [https://arxiv.org/abs/2101.12644](https://arxiv.org/abs/2101.12644).
+If you use these codes or any modified part of them, please cite our paper: M. Nerini, and D. Palma "5G Network Slicing for Wi-Fi Networks", available here [https://arxiv.org/abs/2101.12644](https://arxiv.org/abs/2101.12644) (long version), and here [https://ieeexplore.ieee.org/document/9463988](https://ieeexplore.ieee.org/document/9463988) (short version).
 
 ```
-@article{nerini2021,
-  title={5G Network Slicing for Wi-Fi Networks},
+@INPROCEEDINGS{ner21,
   author={Nerini, Matteo and Palma, David},
-  journal={arXiv preprint arXiv:2101.12644},
-  year={2021}
-}
+  booktitle={2021 IFIP/IEEE International Symposium on Integrated Network Management (IM)}, 
+  title={5G Network Slicing for Wi-Fi Networks}, 
+  year={2021},
+  volume={},
+  number={},
+  pages={633-637},
+  doi={}}
 ```
 
 ## Description
