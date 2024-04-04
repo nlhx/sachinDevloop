@@ -1,16 +1,11 @@
 # 5G Network Slicing for Wi-Fi Networks
 
-## Table of Contents
-- [Authors](#authors)
-- [Introduction](#introduction)
-- [Description](#description)
-- [Usage](#usage)
-- [Contribute](#contribute)
+This code package is related to the paper:
 
-## Authors
+M. Nerini and D. Palma, "[5G Network Slicing for Wi-Fi Networks](https://ieeexplore.ieee.org/document/9463988)," 2021 IFIP/IEEE International Symposium on Integrated Network Management (IM), 2021, pp. 633-637.
 
-* [Matteo Nerini](https://www.imperial.ac.uk/people/m.nerini20)
-* [David Palma](https://www.ntnu.edu/employees/david.palma)
+If you use this code or any modified part of it, please cite our original paper.
+An extended version of the paper is also available [here](https://arxiv.org/abs/2101.12644).
 
 ## Introduction
 
@@ -24,20 +19,6 @@ On top of this scenario, we facilitate the implementation and the testing of rad
 <p align="center"> 
 <img src="https://github.com/matteonerini/5g-network-slicing-for-wifi-networks/blob/main/figs/scenario.png" width="50%">
 </p>
-
-If you use these codes or any modified part of them, please cite our paper: M. Nerini, and D. Palma "5G Network Slicing for Wi-Fi Networks", available here [https://arxiv.org/abs/2101.12644](https://arxiv.org/abs/2101.12644) (long version), and here [https://ieeexplore.ieee.org/document/9463988](https://ieeexplore.ieee.org/document/9463988) (short version).
-
-```
-@INPROCEEDINGS{ner21,
-  author={Nerini, Matteo and Palma, David},
-  booktitle={2021 IFIP/IEEE International Symposium on Integrated Network Management (IM)}, 
-  title={5G Network Slicing for Wi-Fi Networks}, 
-  year={2021},
-  volume={},
-  number={},
-  pages={633-637},
-  doi={}}
-```
 
 ## Description
 
@@ -81,7 +62,3 @@ Before to launch ```run_wifi.py```, make sure to properly set all the available 
 The idea behind our framework is to create three wireless channels, one for each of the three network slices. Each channel is fully characterized by the following properties: the channel bandwidth, the channel number (given by the center frequency as in the *ns-3* [documentation](https://www.nsnam.org/docs/models/html/wifi-user.html)), the Guard Interval (GI), the Modulation and Coding Scheme (MCS) index and the transmission power. Thus, your algorithm should output suitable values for these properties. To integrate a slicing technique, two functions in the ```wifi.cc``` script must be modified:
 * The function ```compute_channels``` must contain the algorithm which compute the initial channels' properties. At this stage, the devices have not started yet their transmissions. Thus, only the characteristics of the scenario can be taken as inputs (e.g. the number of connected STAs), while we do not have any information about the KPIs of the network.
 * The function ```update_channels``` is called every interval of time *T* (*T* = 1 second in our setup) to update the channels' properties. Thus, it must contain the dynamic, smart algorithm which computes updated values of the channels' properties based on the real-time KPIs.
-
-## Contribute
-
-Contributions are very welcome! If you want to contribute, or report a bug, please contact Matteo at m.nerini20 [at] imperial.ac.uk.
