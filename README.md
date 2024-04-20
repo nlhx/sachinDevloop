@@ -2,7 +2,7 @@
 
 This code package is related to the paper:
 
-M. Nerini and D. Palma, "[5G Network Slicing for Wi-Fi Networks](https://ieeexplore.ieee.org/document/9463988)," 2021 IFIP/IEEE International Symposium on Integrated Network Management (IM), 2021, pp. 633-637.
+M. Nerini and D. Palma, "[5G Network Slicing for Wi-Fi Networks](https://ieeexplore.ieee.org/document/9463988)," 2021 IFIP/IEEE International Symposium on Integrated Network Management (IM), 2021.
 
 If you use this code or any modified part of it, please cite our paper.
 An extended version of the paper is also available [here](https://arxiv.org/abs/2101.12644).
